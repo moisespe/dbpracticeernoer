@@ -1,0 +1,69 @@
+-- MySQL Workbench Synchronization
+-- Generated: 2022-02-16 02:05
+-- Model: User and Role
+-- Version: 1.0
+-- Project: sql0001
+-- Author: moises
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+CREATE SCHEMA IF NOT EXISTS `dbpractice1` DEFAULT CHARACTER SET utf8 ;
+
+CREATE TABLE IF NOT EXISTS `dbpractice1`.`Users` (
+  `ID` INT(11) NOT NULL AUTO_INCREMENT,
+  `RoleID` INT(11) NOT NULL,
+  `FirstName` VARCHAR(45) NOT NULL,
+  `LastName` VARCHAR(45) NOT NULL,
+  `UserName` VARCHAR(100) NOT NULL,
+  `PasswordSalt` VARCHAR(200) NOT NULL,
+  `PasswordHash` VARCHAR(200) NOT NULL,
+  `UserState` TINYINT(4) NOT NULL,
+  `create_at` DATETIME NOT NULL,
+  `update_at` DATETIME NOT NULL,
+  PRIMARY KEY (`ID`),
+  INDEX `fk_role_users_idx` (`RoleID` ASC) VISIBLE,
+  CONSTRAINT `fk_role_users`
+    FOREIGN KEY (`RoleID`)
+    REFERENCES `dbpractice1`.`Role` (`ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `dbpractice1`.`Role` (
+  `ID` INT(11) NOT NULL AUTO_INCREMENT,
+  `PlanLevel` VARCHAR(45) NOT NULL,
+  `RoleState` TINYINT(4) NOT NULL,
+  PRIMARY KEY (`ID`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `dbpractice1`.`Memberships` (
+  `ID` INT(11) NOT NULL AUTO_INCREMENT,
+  `RelatedUserID` INT(11) NOT NULL,
+  `RelatedRoleID` INT(11) NOT NULL,
+  `AccountEmailAddress` VARCHAR(45) NULL DEFAULT NULL,
+  `AccountPhoneNumber` VARCHAR(45) NULL DEFAULT NULL,
+  `AccountFax` VARCHAR(45) NULL DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  INDEX `fk_memberszhip_userid_idx` (`RelatedUserID` ASC) VISIBLE,
+  INDEX `fk_membership_roleid_idx` (`RelatedRoleID` ASC) VISIBLE,
+  CONSTRAINT `fk_membership_userid`
+    FOREIGN KEY (`RelatedUserID`)
+    REFERENCES `dbpractice1`.`Users` (`ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_membership_roleid`
+    FOREIGN KEY (`RelatedRoleID`)
+    REFERENCES `dbpractice1`.`Role` (`ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
